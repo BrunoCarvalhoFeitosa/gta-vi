@@ -88,11 +88,11 @@ export const Menu = () => {
 
   return (
     <div className={clsx(
-      "fixed inset-0 transition-transform duration-1000 z-50",
+      "fixed inset-0 transition-transform duration-1000 z-999",
       open ? "translate-x-0" : "translate-x-full"
     )}>
       <div className="w-full h-full flex">
-        <div className="relative w-[15%] md:w-[40%] xl:w-[100%] h-full overflow-hidden bg-gradient-to-br from-[#2d6275] to-[#4B4757]">
+        <div className="relative w-[15%] md:w-[40%] xl:w-full h-full overflow-hidden bg-gradient-to-br from-[#2d6275] to-[#4B4757]">
           <div className="hidden xl:block xl:h-full">
             {activeImage ? (
               <img

@@ -81,7 +81,7 @@ export const HeroSection = () => {
   }, [])
 
   return (
-    <section ref={heroRef} className="w-full h-[400vh] relative overflow-hidden">
+    <section ref={heroRef} className="w-full relative overflow-hidden">
       <div className="sticky top-0 w-full h-screen">
         <div
           ref={imageRef}
