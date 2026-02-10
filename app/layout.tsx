@@ -2,6 +2,7 @@ import type { Metadata } from "next"
 import { Geist, Geist_Mono } from "next/font/google"
 import { Header } from "./components/common/header"
 import { Menu } from "./components/common/menu"
+import { VideoModal } from "./components/common/modals/video-modal"
 import "./globals.css"
 
 const geistSans = Geist({
@@ -28,6 +29,7 @@ export default function RootLayout({ children }: Readonly<{
         <Header />
         <Menu />
         {children}
+        <VideoModal />
       </body>
     </html>
   )
