@@ -223,8 +223,8 @@ export const HeroSection = () => {
             ref={platformsRef}
             className="flex items-center gap-6 opacity-0"
           >
-            <VectorPS5 width={isMobile ? "100" : "140"} height="30" fill="#fff" />
-            <VectorXbox width={isMobile ? "200" : "240"} height="30" fill="#fff" />
+            <VectorPS5 width={isMobile ? "60" : "100"} height="30" fill="#fff" />
+            <VectorXbox width={isMobile ? "160" : "180"} height="30" fill="#fff" />
           </div>
         </div>
       </div>

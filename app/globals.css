@@ -145,3 +145,9 @@ button {
     height: 100% !important;
   }
 }
+
+@media screen and (min-width: 1024px) {
+  .swiper-slide {
+    height: 560px !important;
+  }
+}
