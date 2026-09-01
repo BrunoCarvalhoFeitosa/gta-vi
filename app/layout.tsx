@@ -2,6 +2,7 @@ import type { Metadata } from "next"
 import { Geist, Geist_Mono } from "next/font/google"
 import { Header } from "./components/common/header"
 import { Menu } from "./components/common/menu"
+import { GsapScrollSync } from "./components/common/gsap-scroll-sync"
 import { VideoModal } from "./components/common/modals/video-modal"
 import "./globals.css"
 
@@ -26,6 +27,7 @@ export default function RootLayout({ children }: Readonly<{
   return (
     <html lang="en">
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
+        <GsapScrollSync />
         <Header />
         <Menu />
         {children}

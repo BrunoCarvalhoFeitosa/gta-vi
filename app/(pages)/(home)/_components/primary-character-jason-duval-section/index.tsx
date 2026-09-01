@@ -25,71 +25,84 @@ export const PrimaryCharacterJasonDuval = () => {
   const closeButtonRef = useRef<HTMLButtonElement>(null)
 
   useEffect(() => {
-    const ctx = gsap.context(() => {
-      const firstVideo = firstVideoRef.current
-      const firstVideoWrapper = firstVideoWrapperRef.current
+    const firstVideo = firstVideoRef.current
+    const firstVideoWrapper = firstVideoWrapperRef.current
 
-      if (!firstVideo || !firstVideoWrapper) {
-        return
-      }
+    if (!firstVideo || !firstVideoWrapper) {
+      return
+    }
 
-      const tl = gsap.timeline({
-        scrollTrigger: {
-          trigger: sectionRef.current,
-          start: "top top",
-          end: "+=300%",
-          scrub: true,
-          pin: pinRef.current
-        }
-      })
+    let ctx: gsap.Context | undefined
 
-      tl.to(
-        initialTextRef.current, {
-          scale: 0.95
-        }
-      )
+    const init = () => {
+      ctx = gsap.context(() => {
+        const tl = gsap.timeline({
+          scrollTrigger: {
+            trigger: sectionRef.current,
+            start: "top top",
+            end: "+=300%",
+            scrub: true,
+            pin: pinRef.current
+          }
+        })
 
-      tl.to(
-        initialTextRef.current, {
-          backgroundImage: GRADIENT_END
-        }, 0
-      )
+        tl.to(
+          initialTextRef.current, {
+            scale: 0.95
+          }
+        )
 
-      tl.to(
-        initialTextRef.current, {
-          opacity: 0
-        }, 0
-      )
+        tl.to(
+          initialTextRef.current, {
+            backgroundImage: GRADIENT_END
+          }, 0
+        )
 
-      tl.fromTo(
-        firstVideoWrapper, {
-          opacity: 0,
-          visibility: "hidden"
-        },
-        {
-          opacity: 1,
-          visibility: "visible"
-        }
-      )
+        tl.to(
+          initialTextRef.current, {
+            opacity: 0
+          }, 0
+        )
 
-      tl.fromTo(
-        firstVideo, {
-          opacity: 0,
-          visibility: "hidden"
-        },
-        {
-          opacity: 1,
-          visibility: "visible"
-        }
-      )
+        tl.fromTo(
+          firstVideoWrapper, {
+            opacity: 0,
+            visibility: "hidden"
+          },
+          {
+            opacity: 1,
+            visibility: "visible"
+          }
+        )
 
-      tl.to(firstVideo, {
-        currentTime: firstVideo.duration,
-        ease: "none",
-      })
-    }, sectionRef)
+        tl.fromTo(
+          firstVideo, {
+            opacity: 0,
+            visibility: "hidden"
+          },
+          {
+            opacity: 1,
+            visibility: "visible"
+          }
+        )
 
-    return () => ctx.revert()
+        tl.to(firstVideo, {
+          currentTime: firstVideo.duration,
+          ease: "none",
+        })
+      }, sectionRef)
+    }
+
+    if (firstVideo.readyState >= 1) {
+      init()
+    } else {
+      firstVideo.addEventListener("loadedmetadata", init, { once: true })
+    }
+
+    return () => {
+      firstVideo.removeEventListener("loadedmetadata", init)
+      ctx?.revert()
+    }
   }, [])
 
   useEffect(() => {
@@ -101,6 +114,8 @@ export const PrimaryCharacterJasonDuval = () => {
       return
     }
 
+    let tl: gsap.core.Timeline | undefined
+
     const init = () => {
       gsap.set(
         content, {
@@ -108,7 +123,7 @@ export const PrimaryCharacterJasonDuval = () => {
         }
       )
 
-      const tl = gsap.timeline({
+      tl = gsap.timeline({
         scrollTrigger: {
           trigger: pin,
           start: "top top",
@@ -143,6 +158,12 @@ export const PrimaryCharacterJasonDuval = () => {
       init()
     } else {
       video.addEventListener("loadedmetadata", init, { once: true })
+    }
+
+    return () => {
+      video.removeEventListener("loadedmetadata", init)
+      tl?.scrollTrigger?.kill()
+      tl?.kill()
     }
   }, [])
 
@@ -343,7 +364,7 @@ export const PrimaryCharacterJasonDuval = () => {
         </div>
         <div
           ref={firstVideoContentRef}
-          className="relative w-full flex flex-col lg:flex-row gap-7 pt-20 px-5 pb-40 lg:pt-30 lg:pb-60 2xl:pl-80"
+          className="relative w-full flex flex-col lg:flex-row gap-7 pt-20 px-5 pb-0 lg:pt-30 lg:pb-60 2xl:pl-80"
         >
           <div className="relative lg:flex-1 z-10">
             <div className="xl:pr-40">

@@ -32,11 +32,14 @@ export const EndSection = () => {
       return
     }
 
+    let videoTrigger: ScrollTrigger | undefined
+    let overlayTL: gsap.core.Timeline | undefined
+
     const observer = new IntersectionObserver(
       entries => {
         entries.forEach(entry => {
           if (entry.isIntersecting) {
-            ScrollTrigger.create({
+            videoTrigger = ScrollTrigger.create({
               trigger: videoWrapper,
               start: "top top",
               end: "+=300%",
@@ -48,7 +51,7 @@ export const EndSection = () => {
               }
             })
 
-            const overlayTL = gsap.timeline({
+            overlayTL = gsap.timeline({
               scrollTrigger: {
                 trigger: pin,
                 start: `top top`,
@@ -73,7 +76,7 @@ export const EndSection = () => {
                 {},
                 {
                   onUpdate: () => {
-                    const progress = overlayTL.progress()
+                    const progress = overlayTL!.progress()
 
                     paragraph.style.backgroundImage =
                       progress < 0.33
@@ -97,7 +100,9 @@ export const EndSection = () => {
 
     return () => {
       observer.disconnect()
-      ScrollTrigger.getAll().forEach(st => st.kill())
+      videoTrigger?.kill()
+      overlayTL?.scrollTrigger?.kill()
+      overlayTL?.kill()
     }
   }, [])
 

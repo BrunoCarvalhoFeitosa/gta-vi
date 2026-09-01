@@ -184,12 +184,14 @@ export const SecondaryCharacterLayout = ({
       ScrollTrigger.refresh()
     }
 
-    video.addEventListener("canplaythrough", setup)
-    const fallback = setTimeout(setup, 100)
+    if (video.readyState >= 1) {
+      setup()
+    } else {
+      video.addEventListener("loadedmetadata", setup, { once: true })
+    }
 
     return () => {
-      video.removeEventListener("canplaythrough", setup)
-      clearTimeout(fallback)
+      video.removeEventListener("loadedmetadata", setup)
       tl?.scrollTrigger?.kill()
       tl?.kill()
     }
@@ -338,7 +340,7 @@ export const SecondaryCharacterLayout = ({
               background
             )}
           >
-            <div className="py-30 lg:py-0 lg:flex-1 flex flex-col justify-center items-center">
+            <div className="py-30 px-5 lg:py-0 lg:flex-1 flex flex-col justify-center items-center">
               <p className="font-gothic text-[40px] md:text-[60px] lg:text-[90px] font-bold uppercase leading-none text-center text-white">
                 <q className="w-full">
                   {phrase}
@@ -414,7 +416,7 @@ export const SecondaryCharacterLayout = ({
                 </div>
               </div>
             </div>
-            <div className="py-30 lg:py-0 lg:flex-1 flex flex-col justify-center items-center">
+            <div className="py-30 px-5 lg:py-0 lg:flex-1 flex flex-col justify-center items-center">
               <p className="font-gothic text-[40px] md:text-[60px] lg:text-[90px] font-bold uppercase leading-none text-center text-white">
                 <q className="w-full">
                   {phrase}

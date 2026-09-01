@@ -145,7 +145,7 @@ export const HeroSection = () => {
       ref={heroRef}
       className="relative w-full overflow-hidden"
     >
-      <div className="w-full h-screen">
+      <div className="relative w-full h-screen">
         <div
           ref={imageRef}
           className="absolute inset-0 scale-110 will-change-transform"
@@ -170,7 +170,7 @@ export const HeroSection = () => {
           />
           <button
             type="button"
-            className="size-24 lg:size-30 rounded-full bg-white flex items-center justify-center outline-none transition-transform duration-500 hover:scale-125 cursor-pointer"
+            className="absolute top-1/2 left-1/2 -translate-y-1/2 -translate-x-1/2 size-24 lg:size-30 rounded-full bg-white flex items-center justify-center outline-none transition-transform duration-500 hover:scale-125 cursor-pointer"
             onClick={handleVideoModalOpen}
           >
             <FaPlay className="text-3xl lg:text-4xl text-neutral-700" />

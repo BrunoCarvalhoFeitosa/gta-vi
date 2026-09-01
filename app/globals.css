@@ -3,11 +3,13 @@
 @font-face {
   font-family: "ArtDeco";
   src: url("/fonts/font.otf");
+  font-display: swap;
 }
 
 @font-face {
   font-family: "SpecialGothic";
   src: url("/fonts/special-gothic-condensed-one-regular.ttf");
+  font-display: swap;
 }
 
 @theme {

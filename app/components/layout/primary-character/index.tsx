@@ -68,48 +68,61 @@ export const PrimaryCharacter = ({
   const closeButtonRef = useRef<HTMLButtonElement>(null)
 
   useEffect(() => {
-    const ctx = gsap.context(() => {
-      const video = firstVideoRef.current
-      const content = firstVideoContentRef.current
+    const video = firstVideoRef.current
+    const content = firstVideoContentRef.current
 
-      if (!video || !content) {
-        return
-      }
+    if (!video || !content) {
+      return
+    }
 
-      gsap.set(content, { yPercent: 100 })
+    let ctx: gsap.Context | undefined
 
-      const tl = gsap.timeline({
-        scrollTrigger: {
-          trigger: sectionRef.current,
-          start: "top top",
-          end: "+=400%",
-          scrub: true,
-          pin: true
-        }
-      })
+    const init = () => {
+      ctx = gsap.context(() => {
+        gsap.set(content, { yPercent: 100 })
 
-      tl.fromTo(
-        video,
-        {
-          currentTime: 0
-        },
-        {
-          currentTime: video.duration,
-          ease: "none",
-          duration: 0.85,
-        }
-      )
+        const tl = gsap.timeline({
+          scrollTrigger: {
+            trigger: sectionRef.current,
+            start: "top top",
+            end: "+=400%",
+            scrub: true,
+            pin: true
+          }
+        })
 
-      tl.to(
-        content, {
-          yPercent: 0,
-          ease: "power3.out",
-          duration: 0.6,
-        }
-      )
-    }, sectionRef)
+        tl.fromTo(
+          video,
+          {
+            currentTime: 0
+          },
+          {
+            currentTime: video.duration,
+            ease: "none",
+            duration: 0.85,
+          }
+        )
 
-    return () => ctx.revert()
+        tl.to(
+          content, {
+            yPercent: 0,
+            ease: "power3.out",
+            duration: 0.6,
+          }
+        )
+      }, sectionRef)
+    }
+
+    if (video.readyState >= 1) {
+      init()
+    } else {
+      video.addEventListener("loadedmetadata", init, { once: true })
+    }
+
+    return () => {
+      video.removeEventListener("loadedmetadata", init)
+      ctx?.revert()
+    }
   }, [])
 
   useEffect(() => {
@@ -121,38 +134,54 @@ export const PrimaryCharacter = ({
       return
     }
 
-    gsap.set(
-      content, {
-        yPercent: 100
-      }
-    )
+    let tl: gsap.core.Timeline | undefined
 
-    const tl = gsap.timeline({
-      scrollTrigger: {
-        trigger: pin,
-        start: "top top",
-        end: "+=300%",
-        scrub: true,
-        pin: true
-      }
-    })
+    const init = () => {
+      gsap.set(
+        content, {
+          yPercent: 100
+        }
+      )
 
-    tl.fromTo(
-      video, {
-        currentTime: 0
-      },
-      {
-        currentTime: video.duration,
-        ease: "none"
-      }
-    )
+      tl = gsap.timeline({
+        scrollTrigger: {
+          trigger: pin,
+          start: "top top",
+          end: "+=300%",
+          scrub: true,
+          pin: true
+        }
+      })
 
-    tl.to(
-      content, {
-        yPercent: 0,
-        ease: "power3.out"
-      }, 0.5
-    )
+      tl.fromTo(
+        video, {
+          currentTime: 0
+        },
+        {
+          currentTime: video.duration,
+          ease: "none"
+        }
+      )
+
+      tl.to(
+        content, {
+          yPercent: 0,
+          ease: "power3.out"
+        }, 0.5
+      )
+    }
+
+    if (video.readyState >= 1) {
+      init()
+    } else {
+      video.addEventListener("loadedmetadata", init, { once: true })
+    }
+
+    return () => {
+      video.removeEventListener("loadedmetadata", init)
+      tl?.scrollTrigger?.kill()
+      tl?.kill()
+    }
   }, [])
 
   useEffect(() => {
@@ -216,7 +245,7 @@ export const PrimaryCharacter = ({
         </div>
         <div
           ref={firstVideoContentRef}
-          className="relative w-full flex flex-col lg:flex-row gap-7 pt-20 px-5 pb-40 lg:pt-30 lg:pb-60 2xl:pr-80"
+          className="relative w-full flex flex-col lg:flex-row gap-7 pt-20 px-5 pb-0 lg:pt-30 lg:pb-60 2xl:pr-80"
         >
           <div className="order-2 lg:order-1 relative lg:flex-1 flex flex-col justify-end items-end gap-6 z-10">
             <div className="js-lightbox-trigger group relative hover:border-12 hover:border-white transition-all duration-500">
@@ -252,7 +281,7 @@ export const PrimaryCharacter = ({
                 {firstDescription}
               </p>
             </div>
-            <div className="js-lightbox-trigger group relative mt-28 hover:border-12 hover:border-white transition-all duration-500">
+            <div className="js-lightbox-trigger group relative lg:mt-28 hover:border-12 hover:border-white transition-all duration-500">
               <Image
                 src={firstImage}
                 alt={firstImageAlt}

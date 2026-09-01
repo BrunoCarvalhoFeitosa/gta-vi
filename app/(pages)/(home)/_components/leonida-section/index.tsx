@@ -29,55 +29,55 @@ export const LeonidaSection = () => {
       return
     }
 
-    const tlImage = gsap.timeline({
-      scrollTrigger: {
-        trigger: sectionEl,
-        start: "top bottom",
-        end: "bottom top",
-        scrub: true,
-      },
-    })
-
-    tlImage.fromTo(
-      imageEl,
-      { y: 50, scale: 1.05, rotateX: 3 },
-      { y: -30, scale: 1, rotateX: 0, ease: "power1.out" },
-      0
-    )
-
-    tlImage.to(
-      imageEl,
-      {
-        clipPath: "polygon(0 0, 100% 0, 100% 95%, 0 100%)",
-        ease: "power1.out",
-      },
-      0
-    )
-
-    const tlText = gsap.timeline({
-      scrollTrigger: {
-        trigger: sectionEl,
-        start: "top bottom",
-        end: "bottom top",
-        scrub: true,
-      },
-    })
-
-    gradients.forEach((grad, i) => {
-      tlText.to(
-        textEl,
-        {
-          backgroundImage: grad,
-          duration: 1,
-          ease: "none",
+    const ctx = gsap.context(() => {
+      const tlImage = gsap.timeline({
+        scrollTrigger: {
+          trigger: sectionEl,
+          start: "top bottom",
+          end: "bottom top",
+          scrub: true,
         },
-        i / (gradients.length - 1)
-      )
-    })
+      })
 
-    return () => {
-      ScrollTrigger.getAll().forEach((st) => st.kill())
-    }
+      tlImage.fromTo(
+        imageEl,
+        { y: 50, scale: 1.05, rotateX: 3 },
+        { y: -30, scale: 1, rotateX: 0, ease: "power1.out" },
+        0
+      )
+
+      tlImage.to(
+        imageEl,
+        {
+          clipPath: "polygon(0 0, 100% 0, 100% 95%, 0 100%)",
+          ease: "power1.out",
+        },
+        0
+      )
+
+      const tlText = gsap.timeline({
+        scrollTrigger: {
+          trigger: sectionEl,
+          start: "top bottom",
+          end: "bottom top",
+          scrub: true,
+        },
+      })
+
+      gradients.forEach((grad, i) => {
+        tlText.to(
+          textEl,
+          {
+            backgroundImage: grad,
+            duration: 1,
+            ease: "none",
+          },
+          i / (gradients.length - 1)
+        )
+      })
+    }, sectionEl)
+
+    return () => ctx.revert()
   }, [])
 
   return (
