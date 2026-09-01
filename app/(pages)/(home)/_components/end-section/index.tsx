@@ -32,24 +32,34 @@ export const EndSection = () => {
       return
     }
 
-    let videoTrigger: ScrollTrigger | undefined
+    let videoTl: gsap.core.Timeline | undefined
     let overlayTL: gsap.core.Timeline | undefined
 
     const observer = new IntersectionObserver(
       entries => {
         entries.forEach(entry => {
           if (entry.isIntersecting) {
-            videoTrigger = ScrollTrigger.create({
-              trigger: videoWrapper,
-              start: "top top",
-              end: "+=300%",
-              pin: true,
-              scrub: true,
-              anticipatePin: 1,
-              onUpdate: self => {
-                video.currentTime = self.progress * video.duration
+            videoTl = gsap.timeline({
+              scrollTrigger: {
+                trigger: videoWrapper,
+                start: "top top",
+                end: "+=300%",
+                pin: true,
+                scrub: true,
+                anticipatePin: 1,
               }
             })
+
+            videoTl.fromTo(
+              video,
+              {
+                currentTime: 0
+              },
+              {
+                currentTime: () => video.duration || 0,
+                ease: "none"
+              }
+            )
 
             overlayTL = gsap.timeline({
               scrollTrigger: {
@@ -100,7 +110,8 @@ export const EndSection = () => {
 
     return () => {
       observer.disconnect()
-      videoTrigger?.kill()
+      videoTl?.scrollTrigger?.kill()
+      videoTl?.kill()
       overlayTL?.scrollTrigger?.kill()
       overlayTL?.kill()
     }

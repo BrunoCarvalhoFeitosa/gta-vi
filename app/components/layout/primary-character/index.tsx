@@ -84,7 +84,8 @@ export const PrimaryCharacter = ({
           start: "top top",
           end: "+=400%",
           scrub: true,
-          pin: true
+          pin: true,
+          anticipatePin: 1
         }
       })
 
@@ -133,7 +134,8 @@ export const PrimaryCharacter = ({
         start: "top top",
         end: "+=300%",
         scrub: true,
-        pin: true
+        pin: true,
+        anticipatePin: 1
       }
     })
 

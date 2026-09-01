@@ -40,6 +40,7 @@ export const PrimaryCharacterJasonDuval = () => {
           end: "+=300%",
           scrub: true,
           pin: pinRef.current,
+          anticipatePin: 1,
           onLeave: () => gsap.set(firstVideoWrapper, { opacity: 0, visibility: "hidden" }),
           onEnterBack: () => gsap.set(firstVideoWrapper, { opacity: 1, visibility: "visible" })
         }
@@ -116,6 +117,7 @@ export const PrimaryCharacterJasonDuval = () => {
         end: "+=350%",
         scrub: true,
         pin: true,
+        anticipatePin: 1,
         onLeave: () => gsap.set(video, { opacity: 0, visibility: "hidden" }),
         onEnterBack: () => gsap.set(video, { opacity: 1, visibility: "visible" })
       },
