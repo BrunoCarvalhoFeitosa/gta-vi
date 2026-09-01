@@ -180,8 +180,6 @@ export const SecondaryCharacterLayout = ({
         video.currentTime = 0
         video.play()
       }
-
-      ScrollTrigger.refresh()
     }
 
     if (video.readyState >= 1) {
