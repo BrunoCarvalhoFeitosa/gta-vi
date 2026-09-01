@@ -75,54 +75,41 @@ export const PrimaryCharacter = ({
       return
     }
 
-    let ctx: gsap.Context | undefined
+    const ctx = gsap.context(() => {
+      gsap.set(content, { yPercent: 100 })
 
-    const init = () => {
-      ctx = gsap.context(() => {
-        gsap.set(content, { yPercent: 100 })
+      const tl = gsap.timeline({
+        scrollTrigger: {
+          trigger: sectionRef.current,
+          start: "top top",
+          end: "+=400%",
+          scrub: true,
+          pin: true
+        }
+      })
 
-        const tl = gsap.timeline({
-          scrollTrigger: {
-            trigger: sectionRef.current,
-            start: "top top",
-            end: "+=400%",
-            scrub: true,
-            pin: true
-          }
-        })
+      tl.fromTo(
+        video,
+        {
+          currentTime: 0
+        },
+        {
+          currentTime: () => video.duration || 0,
+          ease: "none",
+          duration: 0.85,
+        }
+      )
 
-        tl.fromTo(
-          video,
-          {
-            currentTime: 0
-          },
-          {
-            currentTime: video.duration,
-            ease: "none",
-            duration: 0.85,
-          }
-        )
+      tl.to(
+        content, {
+          yPercent: 0,
+          ease: "power3.out",
+          duration: 0.6,
+        }
+      )
+    }, sectionRef)
 
-        tl.to(
-          content, {
-            yPercent: 0,
-            ease: "power3.out",
-            duration: 0.6,
-          }
-        )
-      }, sectionRef)
-    }
-
-    if (video.readyState >= 1) {
-      init()
-    } else {
-      video.addEventListener("loadedmetadata", init, { once: true })
-    }
-
-    return () => {
-      video.removeEventListener("loadedmetadata", init)
-      ctx?.revert()
-    }
+    return () => ctx.revert()
   }, [])
 
   useEffect(() => {
@@ -134,53 +121,42 @@ export const PrimaryCharacter = ({
       return
     }
 
-    let tl: gsap.core.Timeline | undefined
+    gsap.set(
+      content, {
+        yPercent: 100
+      }
+    )
 
-    const init = () => {
-      gsap.set(
-        content, {
-          yPercent: 100
-        }
-      )
+    const tl = gsap.timeline({
+      scrollTrigger: {
+        trigger: pin,
+        start: "top top",
+        end: "+=300%",
+        scrub: true,
+        pin: true
+      }
+    })
 
-      tl = gsap.timeline({
-        scrollTrigger: {
-          trigger: pin,
-          start: "top top",
-          end: "+=300%",
-          scrub: true,
-          pin: true
-        }
-      })
+    tl.fromTo(
+      video, {
+        currentTime: 0
+      },
+      {
+        currentTime: () => video.duration || 0,
+        ease: "none"
+      }
+    )
 
-      tl.fromTo(
-        video, {
-          currentTime: 0
-        },
-        {
-          currentTime: video.duration,
-          ease: "none"
-        }
-      )
-
-      tl.to(
-        content, {
-          yPercent: 0,
-          ease: "power3.out"
-        }, 0.5
-      )
-    }
-
-    if (video.readyState >= 1) {
-      init()
-    } else {
-      video.addEventListener("loadedmetadata", init, { once: true })
-    }
+    tl.to(
+      content, {
+        yPercent: 0,
+        ease: "power3.out"
+      }, 0.5
+    )
 
     return () => {
-      video.removeEventListener("loadedmetadata", init)
-      tl?.scrollTrigger?.kill()
-      tl?.kill()
+      tl.scrollTrigger?.kill()
+      tl.kill()
     }
   }, [])
 

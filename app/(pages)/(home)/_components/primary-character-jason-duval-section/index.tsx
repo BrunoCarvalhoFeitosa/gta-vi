@@ -32,79 +32,66 @@ export const PrimaryCharacterJasonDuval = () => {
       return
     }
 
-    let ctx: gsap.Context | undefined
+    const ctx = gsap.context(() => {
+      const tl = gsap.timeline({
+        scrollTrigger: {
+          trigger: sectionRef.current,
+          start: "top top",
+          end: "+=300%",
+          scrub: true,
+          pin: pinRef.current,
+          onLeave: () => gsap.set(firstVideoWrapper, { opacity: 0, visibility: "hidden" }),
+          onEnterBack: () => gsap.set(firstVideoWrapper, { opacity: 1, visibility: "visible" })
+        }
+      })
 
-    const init = () => {
-      ctx = gsap.context(() => {
-        const tl = gsap.timeline({
-          scrollTrigger: {
-            trigger: sectionRef.current,
-            start: "top top",
-            end: "+=300%",
-            scrub: true,
-            pin: pinRef.current,
-            onLeave: () => gsap.set(firstVideoWrapper, { opacity: 0, visibility: "hidden" }),
-            onEnterBack: () => gsap.set(firstVideoWrapper, { opacity: 1, visibility: "visible" })
-          }
-        })
+      tl.to(
+        initialTextRef.current, {
+          scale: 0.95
+        }
+      )
 
-        tl.to(
-          initialTextRef.current, {
-            scale: 0.95
-          }
-        )
+      tl.to(
+        initialTextRef.current, {
+          backgroundImage: GRADIENT_END
+        }, 0
+      )
 
-        tl.to(
-          initialTextRef.current, {
-            backgroundImage: GRADIENT_END
-          }, 0
-        )
+      tl.to(
+        initialTextRef.current, {
+          opacity: 0
+        }, 0
+      )
 
-        tl.to(
-          initialTextRef.current, {
-            opacity: 0
-          }, 0
-        )
+      tl.fromTo(
+        firstVideoWrapper, {
+          opacity: 0,
+          visibility: "hidden"
+        },
+        {
+          opacity: 1,
+          visibility: "visible"
+        }
+      )
 
-        tl.fromTo(
-          firstVideoWrapper, {
-            opacity: 0,
-            visibility: "hidden"
-          },
-          {
-            opacity: 1,
-            visibility: "visible"
-          }
-        )
+      tl.fromTo(
+        firstVideo, {
+          opacity: 0,
+          visibility: "hidden"
+        },
+        {
+          opacity: 1,
+          visibility: "visible"
+        }
+      )
 
-        tl.fromTo(
-          firstVideo, {
-            opacity: 0,
-            visibility: "hidden"
-          },
-          {
-            opacity: 1,
-            visibility: "visible"
-          }
-        )
+      tl.to(firstVideo, {
+        currentTime: () => firstVideo.duration || 0,
+        ease: "none",
+      })
+    }, sectionRef)
 
-        tl.to(firstVideo, {
-          currentTime: firstVideo.duration,
-          ease: "none",
-        })
-      }, sectionRef)
-    }
-
-    if (firstVideo.readyState >= 1) {
-      init()
-    } else {
-      firstVideo.addEventListener("loadedmetadata", init, { once: true })
-    }
-
-    return () => {
-      firstVideo.removeEventListener("loadedmetadata", init)
-      ctx?.revert()
-    }
+    return () => ctx.revert()
   }, [])
 
   useEffect(() => {
@@ -116,58 +103,47 @@ export const PrimaryCharacterJasonDuval = () => {
       return
     }
 
-    let tl: gsap.core.Timeline | undefined
+    gsap.set(
+      content, {
+        yPercent: 100
+      }
+    )
 
-    const init = () => {
-      gsap.set(
-        content, {
-          yPercent: 100
-        }
-      )
+    const tl = gsap.timeline({
+      scrollTrigger: {
+        trigger: pin,
+        start: "top top",
+        end: "+=350%",
+        scrub: true,
+        pin: true,
+        onLeave: () => gsap.set(video, { opacity: 0, visibility: "hidden" }),
+        onEnterBack: () => gsap.set(video, { opacity: 1, visibility: "visible" })
+      },
+    })
 
-      tl = gsap.timeline({
-        scrollTrigger: {
-          trigger: pin,
-          start: "top top",
-          end: "+=350%",
-          scrub: true,
-          pin: true,
-          onLeave: () => gsap.set(video, { opacity: 0, visibility: "hidden" }),
-          onEnterBack: () => gsap.set(video, { opacity: 1, visibility: "visible" })
-        },
-      })
+    tl.fromTo(
+      video,
+      {
+        currentTime: 0
+      },
+      {
+        currentTime: () => video.duration || 0,
+        ease: "none",
+        duration: 1,
+      }
+    )
 
-      tl.fromTo(
-        video,
-        {
-          currentTime: 0
-        },
-        {
-          currentTime: video.duration,
-          ease: "none",
-          duration: 1,
-        }
-      )
-
-      tl.to(
-        content, {
-          yPercent: 0,
-          duration: 0.6,
-          ease: "power3.out",
-        }
-      )
-    }
-
-    if (video.readyState >= 1) {
-      init()
-    } else {
-      video.addEventListener("loadedmetadata", init, { once: true })
-    }
+    tl.to(
+      content, {
+        yPercent: 0,
+        duration: 0.6,
+        ease: "power3.out",
+      }
+    )
 
     return () => {
-      video.removeEventListener("loadedmetadata", init)
-      tl?.scrollTrigger?.kill()
-      tl?.kill()
+      tl.scrollTrigger?.kill()
+      tl.kill()
     }
   }, [])
 

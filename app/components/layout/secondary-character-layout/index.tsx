@@ -78,120 +78,105 @@ export const SecondaryCharacterLayout = ({
       return
     }
 
-    let tl: gsap.core.Timeline | null = null
+    video.pause()
+    video.currentTime = 0
 
-    const setup = () => {
-      if (tl) {
-        return
-      }
+    const tl = gsap.timeline({
+      scrollTrigger: {
+        trigger: pinEl,
+        start: "top top",
+        end: "+=100%",
+        scrub: true,
+        pin: true,
+        anticipatePin: 1,
+        onUpdate: (self) => {
+          const t = self.progress
 
-      video.pause()
+          if (t < 1) {
+            gsap.to(
+              timelineFill, {
+                scaleY: t,
+                opacity: 1,
+                ease: "none",
+                overwrite: "auto",
+              }
+            )
+
+            gsap.to(
+              outerBar, {
+                width: 24,
+                height: 112,
+                borderRadius: "30px",
+                ease: "power2.out",
+              }
+            )
+
+            gsap.to(
+              replayIcon, {
+                opacity: 0,
+                pointerEvents: "none",
+                ease: "power2.out"
+              }
+            )
+          }
+
+          if (t >= 1) {
+            gsap.to(
+              timelineFill, {
+                opacity: 0,
+                ease: "power2.out"
+              }
+            )
+
+            gsap.to(
+              outerBar, {
+                width: 70,
+                height: 70,
+                borderRadius: "50%",
+                ease: "power2.out"
+              }
+            )
+
+            gsap.to(
+              replayIcon, {
+                opacity: 1,
+                pointerEvents: "auto",
+                ease: "power2.out"
+              }
+            )
+          }
+        },
+      },
+    })
+
+    tl.to(
+      video, {
+        currentTime: () => video.duration || 1,
+        ease: "none"
+      }, 0
+    )
+
+    tl.fromTo(
+      pinEl.querySelector("p"),
+      {
+        opacity: 0,
+        y: 100
+      },
+      {
+        opacity: 1,
+        y: 0,
+        duration: 0.4
+      }, 0.15
+    )
+
+    timelineWrapper.onclick = () => {
       video.currentTime = 0
-
-      tl = gsap.timeline({
-        scrollTrigger: {
-          trigger: pinEl,
-          start: "top top",
-          end: "+=100%",
-          scrub: true,
-          pin: true,
-          anticipatePin: 1,
-          onUpdate: (self) => {
-            const t = self.progress
-
-            if (t < 1) {
-              gsap.to(
-                timelineFill, {
-                  scaleY: t,
-                  opacity: 1,
-                  ease: "none",
-                  overwrite: "auto",
-                }
-              )
-
-              gsap.to(
-                outerBar, {
-                  width: 24,
-                  height: 112,
-                  borderRadius: "30px",
-                  ease: "power2.out",
-                }
-              )
-
-              gsap.to(
-                replayIcon, {
-                  opacity: 0,
-                  pointerEvents: "none",
-                  ease: "power2.out"
-                }
-              )
-            }
-
-            if (t >= 1) {
-              gsap.to(
-                timelineFill, {
-                  opacity: 0,
-                  ease: "power2.out"
-                }
-              )
-
-              gsap.to(
-                outerBar, {
-                  width: 70,
-                  height: 70,
-                  borderRadius: "50%",
-                  ease: "power2.out"
-                }
-              )
-
-              gsap.to(
-                replayIcon, {
-                  opacity: 1,
-                  pointerEvents: "auto",
-                  ease: "power2.out"
-                }
-              )
-            }
-          },
-        },
-      })
-
-      tl.to(
-        video, {
-          currentTime: video.duration || 1,
-          ease: "none"
-        }, 0
-      )
-
-      tl.fromTo(
-        pinEl.querySelector("p"),
-        {
-          opacity: 0,
-          y: 100
-        },
-        {
-          opacity: 1,
-          y: 0,
-          duration: 0.4
-        }, 0.15
-      )
-
-      timelineWrapper.onclick = () => {
-        video.currentTime = 0
-        video.play()
-      }
-    }
-
-    if (video.readyState >= 1) {
-      setup()
-    } else {
-      video.addEventListener("loadedmetadata", setup, { once: true })
+      video.play()
     }
 
     return () => {
-      video.removeEventListener("loadedmetadata", setup)
-      tl?.scrollTrigger?.kill()
-      tl?.kill()
+      tl.scrollTrigger?.kill()
+      tl.kill()
     }
   }, [])
 
